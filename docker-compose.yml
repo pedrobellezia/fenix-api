@@ -1,12 +1,10 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16-alpine
     container_name: fenix-db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5431:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -22,6 +20,7 @@ services:
       retries: 10
 
   app:
+    build: .
     image: fenix-app:latest
     container_name: fenix-app
     restart: unless-stopped
