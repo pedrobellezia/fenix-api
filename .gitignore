@@ -1,3 +1,73 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+*.sql
+### Added entries ###
+
+# Build output
+/build/
+
+# Logs and temp
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+*.keystore
+*.jks
+
+# Docker / DB data
+dbdata/
+postgres_data/
+
+# Java artifacts
+*.class
+*.jar
+*.war
+*.ear
+
+# Misc
+*.lock
+*.swp
+node_modules/
+
+# Prevent committing local application overrides
+application.properties
 # Compiled class file
 *.class
 
