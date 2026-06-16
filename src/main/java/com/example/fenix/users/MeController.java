@@ -26,16 +26,16 @@ public class MeController {
 
     // Retorna os dados do perfil (GET /me)
     @GetMapping
-    public ResponseEntity<User> getMe() {
+    public ResponseEntity<?> getMe() {
         return ResponseEntity.ok(getUsuarioLogado());
     }
 
     // Atualiza o perfil dinamicamente (PATCH /me)
     @PatchMapping
-    public ResponseEntity<Void> updateMe(@RequestBody Map<String, Object> updates) {
+    public ResponseEntity<String> updateMe(@RequestBody Map<String, Object> updates) {
         // Exigência do Pedro: Retornar erro se o body for vazio
         if (updates.isEmpty()) {
-            return ResponseEntity.badRequest().build(); 
+            return ResponseEntity.badRequest().body("Nenhum campo foi informado para atualização.");
         }
 
         User user = getUsuarioLogado();
