@@ -33,6 +33,15 @@ public class AuthController {
     // DTO super rápido para o Login
     public record LoginRequest(String email, String password) {}
 
+    // DTO para o Cadastro
+    public record RegisterRequest(
+            String name,
+            String displayName,
+            String email,
+            String password,
+            String role
+    ) {}
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         // O porteiro confere a senha
@@ -49,9 +58,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody User user) {
-        // Criptografa a senha para nenhum hacker (nem você) saber a senha real do paciente
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
+        User user = new User();
+        user.setName(request.name());
+        user.setDisplayName(request.displayName());
+        user.setEmail(request.email());
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setRole(request.role());
         user.setActive(true); // Conta nasce ativa
         
         userRepository.save(user);
