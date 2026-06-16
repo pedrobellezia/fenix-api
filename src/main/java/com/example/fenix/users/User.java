@@ -3,6 +3,10 @@ package com.example.fenix.users;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
@@ -16,6 +20,10 @@ public class User {
 
     @Column(nullable = false, length = 120)
     private String name;
+
+    // username único para exibição, pode ser o mesmo que o name ou algo diferente, mas deve ser único
+    @Column(unique = true)
+    private String displayName;
 
     @Column(length = 300)
     private String bio;
@@ -41,13 +49,12 @@ public class User {
 
    
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(nullable = false)
     private String role;
 
-    @Column(name = "is_private", nullable = false)
-    private boolean isPrivate = false;
 
     @PreUpdate
     private void onUpdate() {
@@ -137,13 +144,12 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-      public boolean isPrivate() {
-        return isPrivate;
+    public String getDisplayName() {
+        return displayName;
     }
-
-    public void setPrivate(boolean isPrivate) {
-        this.isPrivate = isPrivate;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
-
+      
 
 }
