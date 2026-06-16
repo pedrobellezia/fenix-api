@@ -25,7 +25,7 @@ public class User {
     @Column(unique = true)
     private String displayName;
 
-    @Column(length = 300)
+    @Column(length = 300, nullable = true)
     private String bio;
 
     @Email(message = "Email deve ser válido")
@@ -38,7 +38,7 @@ public class User {
     @Column(nullable = false)
     private Boolean active = true;
 
-    @Column(name = "treatment_phase", length = 50, nullable = false)
+    @Column(name = "treatment_phase", length = 50, nullable = true)
     private String treatmentPhase;
 
     @Column(name = "created_at", insertable = false, updatable = false)
