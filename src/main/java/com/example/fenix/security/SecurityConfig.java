@@ -33,6 +33,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll() // Rotas abertas!
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // OpenAPI e Swagger abertos
+                .requestMatchers(HttpMethod.POST, "/api/posts").hasAnyRole("PACIENTE", "ADMIN", "PROFISSIONAL") // Restringe postagem para clientes e admins
                 .anyRequest().authenticated() // Qualquer outra rota exige o token 
             )
             // Adiciona o nosso leitor ANTES do filtro padrão do Spring
