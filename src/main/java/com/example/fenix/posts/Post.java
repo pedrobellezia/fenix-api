@@ -5,7 +5,11 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+import java.util.List;
+import java.util.ArrayList;
+import com.example.fenix.postlikes.PostLike;
+import com.example.fenix.postmedia.PostMedia;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -35,6 +39,14 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("post")
+    private List<PostLike> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("post")
+    private List<PostMedia> media = new ArrayList<>();
+
     // Getters e Setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
@@ -56,4 +68,10 @@ public class Post {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public List<PostLike> getLikes() { return likes; }
+    public void setLikes(List<PostLike> likes) { this.likes = likes; }
+
+    public List<PostMedia> getMedia() { return media; }
+    public void setMedia(List<PostMedia> media) { this.media = media; }
 }
