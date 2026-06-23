@@ -36,34 +36,33 @@ public class PostMediaService {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PostMedia not found"));
     }
 
-    // A MÁGICA ACONTECE AQUI
     public PostMedia upload(UUID postId, MultipartFile file) {
         try {
-            // 1. Acha o Post dono da imagem
+            // acha o post dono da imagem
             Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post não encontrado"));
 
-            // 2. Cria a pasta 'uploads' no servidor se ela não existir
+            // cria a pasta 'uploads' no servidor se ela não existir
             Path uploadPath = Paths.get(UPLOAD_DIR);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // 3. Gera um nome único para o arquivo (para o paciente não sobrescrever a foto do outro)
+            // gera um nome único para o arquivo (para o paciente não sobrescrever a foto do outro)
             String originalName = file.getOriginalFilename();
             String extension = originalName != null ? originalName.substring(originalName.lastIndexOf(".")) : "";
             String fileName = UUID.randomUUID().toString() + extension;
 
-            // 4. Salva o arquivo fisicamente no computador
+            // salva o arquivo fisicamente no computador
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath);
 
-            // 5. Salva a URL no Banco de Dados
+            // salva a URL no Banco de Dados
             PostMedia media = new PostMedia();
             media.setPost(post);
             media.setMimeType(file.getContentType());
             
-            // Troque o "localhost" pelo seu IP (ex: 172.19...) se for testar pelo celular
+            // troque o "localhost" pelo seu IP se for testar pelo celular
             media.setMediaUrl("http://localhost:8080/uploads/" + fileName); 
 
             return postMediaRepository.save(media);
