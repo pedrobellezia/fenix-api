@@ -41,10 +41,12 @@ public class User {
     @Column(name = "treatment_phase", length = 50, nullable = true)
     private String treatmentPhase;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @org.hibernate.annotations.CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", insertable = false, updatable = false)
+    @org.hibernate.annotations.UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
    
@@ -56,16 +58,7 @@ public class User {
     private String role;
 
 
-    @PreUpdate
-    private void onUpdate() {
-        this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);
-    }
 
-    @PrePersist
-    private void onCreate() {
-        this.createdAt = LocalDateTime.now(ZoneOffset.UTC);
-        this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);
-    }
 
     public UUID getId() {
         return id;
