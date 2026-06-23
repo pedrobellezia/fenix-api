@@ -21,11 +21,10 @@ public class UserService {
     }
 
     public User findById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return userRepository.findById(id).orElse(null);
     }
 
-    public User create(User user) {
+    public org.springframework.http.ResponseEntity<?> create(User user) {
         user.setId(null);
 
         if (user.getActive() == null) {
@@ -33,22 +32,24 @@ public class UserService {
         }
 
         if (user.getTreatmentPhase() == null || user.getTreatmentPhase().trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Treatment phase is required");
+            return org.springframework.http.ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Treatment phase is required");
         }
 
         User saved = userRepository.save(user);
-        return saved;
+        return org.springframework.http.ResponseEntity.ok(saved);
     }
 
-    public void delete(UUID id) {
+    public boolean delete(UUID id) {
         if (!userRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            return false;
         }
         userRepository.deleteById(id);
+        return true;
     }
 
     public User update(UUID id, User user) {
         User existingUser = findById(id);
+        if (existingUser == null) return null;
         if (user.getName() != null) {
             existingUser.setName(user.getName());
         }

@@ -47,6 +47,10 @@ public class Post {
     @JsonIgnoreProperties("post")
     private List<PostMedia> media = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("post")
+    private List<com.example.fenix.comments.Comment> comments = new ArrayList<>();
+
     // Getters e Setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
@@ -74,4 +78,7 @@ public class Post {
 
     public List<PostMedia> getMedia() { return media; }
     public void setMedia(List<PostMedia> media) { this.media = media; }
+
+    public List<com.example.fenix.comments.Comment> getComments() { return comments; }
+    public void setComments(List<com.example.fenix.comments.Comment> comments) { this.comments = comments; }
 }

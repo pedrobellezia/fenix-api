@@ -16,6 +16,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("comments")
     private Post post;
 
     @ManyToOne
@@ -24,7 +25,12 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "parent_comment_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("replies")
     private Comment parentComment;
+
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("parentComment")
+    private java.util.List<Comment> replies = new java.util.ArrayList<>();
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String body;
@@ -71,6 +77,14 @@ public class Comment {
 
     public void setParentComment(Comment parentComment) {
         this.parentComment = parentComment;
+    }
+
+    public java.util.List<Comment> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(java.util.List<Comment> replies) {
+        this.replies = replies;
     }
 
     public String getBody() {

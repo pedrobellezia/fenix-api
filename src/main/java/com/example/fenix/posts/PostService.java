@@ -21,7 +21,9 @@ public class PostService {
     }
 
     public Post buscarPorId(UUID id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post não encontrado com id: " + id));
+        return postRepository.findById(id).orElse(null);
+    }
+    public void deletarPost(UUID id) {
+        postRepository.deleteById(id);
     }
 }

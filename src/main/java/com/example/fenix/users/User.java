@@ -57,6 +57,14 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.List<com.example.fenix.posts.Post> posts = new java.util.ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.List<com.example.fenix.comments.Comment> comments = new java.util.ArrayList<>();
+
 
 
 
@@ -142,6 +150,20 @@ public class User {
     }
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public java.util.List<com.example.fenix.posts.Post> getPosts() {
+        return posts;
+    }
+    public void setPosts(java.util.List<com.example.fenix.posts.Post> posts) {
+        this.posts = posts;
+    }
+
+    public java.util.List<com.example.fenix.comments.Comment> getComments() {
+        return comments;
+    }
+    public void setComments(java.util.List<com.example.fenix.comments.Comment> comments) {
+        this.comments = comments;
     }
       
 

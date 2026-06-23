@@ -23,8 +23,7 @@ public class PostMediaService {
     }
 
     public PostMedia findById(UUID id) {
-        return postMediaRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PostMedia not found"));
+        return postMediaRepository.findById(id).orElse(null);
     }
 
     public PostMedia create(PostMedia postMedia) {
@@ -34,6 +33,7 @@ public class PostMediaService {
 
     public PostMedia update(UUID id, PostMedia postMedia) {
         PostMedia existingPostMedia = findById(id);
+        if (existingPostMedia == null) return null;
         
         if (postMedia.getMediaType() != null) {
             existingPostMedia.setMediaType(postMedia.getMediaType());
@@ -50,10 +50,11 @@ public class PostMediaService {
         return postMediaRepository.save(existingPostMedia);
     }
 
-    public void delete(UUID id) {
+    public boolean delete(UUID id) {
         if (!postMediaRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PostMedia not found");
+            return false;
         }
         postMediaRepository.deleteById(id);
+        return true;
     }
 }
