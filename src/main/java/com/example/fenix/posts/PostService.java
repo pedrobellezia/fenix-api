@@ -3,6 +3,7 @@ package com.example.fenix.posts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PostService {
@@ -17,5 +18,10 @@ public class PostService {
 
     public List<Post> listarFeed() {
         return postRepository.findAll();
+    }
+
+    public Post buscarPorId(UUID id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post não encontrado com id: " + id));
     }
 }

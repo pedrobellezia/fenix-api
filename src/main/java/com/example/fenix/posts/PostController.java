@@ -7,8 +7,12 @@ import com.example.fenix.users.User;
 import com.example.fenix.users.UserRepository;
 import java.util.List;
 
+import com.example.fenix.comments.CommentService;
+import com.example.fenix.comments.Comment;
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping(value = {"/api/posts", "/api/post"})
 @CrossOrigin(origins = "*") 
 public class PostController {
 
@@ -17,6 +21,9 @@ public class PostController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentService commentService;
 
     @PostMapping
     public Post createPost(@RequestBody Post post) {
@@ -42,5 +49,15 @@ public class PostController {
     @GetMapping
     public List<Post> getFeed() {
         return postService.listarFeed();
+    }
+
+    @GetMapping("/{id}")
+    public Post getPostById(@PathVariable UUID id) {
+        return postService.buscarPorId(id);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<Comment> getCommentsByPost(@PathVariable UUID id) {
+        return commentService.listarComentariosPorPost(id);
     }
 }
