@@ -38,7 +38,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Se achou um e-mail no token e o usuário ainda não está autenticado no contexto
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
             if (jwtUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
