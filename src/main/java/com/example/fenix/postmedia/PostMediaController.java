@@ -2,6 +2,7 @@ package com.example.fenix.postmedia;
 
 import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpStatus;
 import java.util.List;
 
@@ -25,10 +26,11 @@ public class PostMediaController {
         return postMediaService.findById(id);
     }
 
-    @PostMapping
+    @PostMapping(consumes = {"multipart/form-data"})
+
     @ResponseStatus(HttpStatus.CREATED)
-    public PostMedia create(@RequestBody PostMedia postMedia) {
-        return postMediaService.create(postMedia);
+    public PostMedia uploadMedia(@RequestParam("postId") UUID postId, @RequestParam("file") MultipartFile file) {
+        return postMediaService.upload(postId, file);
     }
 
     @PutMapping("/{id}")
