@@ -25,25 +25,32 @@ public class PostController {
     @Autowired
     private CommentService commentService;
 
-    @PostMapping
-    public Post createPost(@RequestBody Post post) {
+    @Autowired
+    private com.example.fenix.postmedia.PostMediaService postMediaService;
+
+    @PostMapping(consumes = {"multipart/form-data"})
+    public org.springframework.http.ResponseEntity<?> createPost(
+            @RequestPart("post") Post post,
+            @RequestPart(value = "files", required = false) List<org.springframework.web.multipart.MultipartFile> files) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println("DEBUG POST: Email from security context: " + email);
         User user = userRepository.findByEmail(email);
         System.out.println("DEBUG POST: User from repository: " + (user != null ? user.getId() : "null"));
         if (user == null) {
-            throw new RuntimeException("User not found for email: " + email);
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.NOT_FOUND).body("User not found for email: " + email);
         }
         post.setUser(user);
 
-        // Se houver mídcrie ias enviadas junto com o post, vinculamos o post a cada uma delas
-        if (post.getMedia() != null) {
-            for (com.example.fenix.postmedia.PostMedia m : post.getMedia()) {
-                m.setPost(post);
+        Post savedPost = postService.criarPost(post);
+
+        if (files != null && !files.isEmpty()) {
+            for (org.springframework.web.multipart.MultipartFile file : files) {
+                postMediaService.upload(savedPost.getId(), file);
             }
+            savedPost = postService.buscarPorId(savedPost.getId());
         }
 
-        return postService.criarPost(post);
+        return org.springframework.http.ResponseEntity.ok(savedPost);
     }
 
     @GetMapping
@@ -52,12 +59,36 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public Post getPostById(@PathVariable UUID id) {
-        return postService.buscarPorId(id);
+    public org.springframework.http.ResponseEntity<?> getPostById(@PathVariable UUID id) {
+        Post post = postService.buscarPorId(id);
+        if (post == null) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.NOT_FOUND).body("Post não encontrado");
+        }
+        return org.springframework.http.ResponseEntity.ok(post);
     }
 
     @GetMapping("/{id}/comments")
     public List<Comment> getCommentsByPost(@PathVariable UUID id) {
         return commentService.listarComentariosPorPost(id);
+    }
+    @DeleteMapping("/{id}")
+    public org.springframework.http.ResponseEntity<?> deletePost(@PathVariable UUID id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(email);
+        if (currentUser == null) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body("User not found for email: " + email);
+        }
+
+        Post post = postService.buscarPorId(id);
+        if (post == null) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.NOT_FOUND).body("Post not found");
+        }
+
+        if (!post.getUser().getId().equals(currentUser.getId()) && !"ADMIN".equals(currentUser.getRole())) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).body("Unauthorized: You can only delete your own posts unless you are an ADMIN");
+        }
+
+        postService.deletarPost(id);
+        return org.springframework.http.ResponseEntity.ok().build();
     }
 }
