@@ -17,8 +17,8 @@ public class PostMedia {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @Column(name = "media_url", nullable = false, length = 500)
-    private String mediaUrl;
+    @Column(name = "filename", nullable = false, length = 500)
+    private String filename;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "media_type", nullable = false)
@@ -52,12 +52,12 @@ public class PostMedia {
         this.post = post;
     }
 
-    public String getMediaUrl() {
-        return mediaUrl;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setMediaUrl(String mediaUrl) {
-        this.mediaUrl = mediaUrl;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public MediaType getMediaType() {

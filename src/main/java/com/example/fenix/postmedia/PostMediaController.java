@@ -22,8 +22,12 @@ public class PostMediaController {
     }
 
     @GetMapping("/{id}")
-    public PostMedia getById(@PathVariable UUID id) {
-        return postMediaService.findById(id);
+    public org.springframework.http.ResponseEntity<?> getById(@PathVariable UUID id) {
+        PostMedia media = postMediaService.findById(id);
+        if (media == null) {
+            return org.springframework.http.ResponseEntity.status(HttpStatus.NOT_FOUND).body("PostMedia not found");
+        }
+        return org.springframework.http.ResponseEntity.ok(media);
     }
 
     @PostMapping(consumes = {"multipart/form-data"})
@@ -34,13 +38,17 @@ public class PostMediaController {
     }
 
     @PutMapping("/{id}")
-    public PostMedia update(@PathVariable UUID id, @RequestBody PostMedia postMedia) {
-        return postMediaService.update(id, postMedia);
+    public org.springframework.http.ResponseEntity<?> update(@PathVariable UUID id, @RequestBody PostMedia postMedia) {
+        PostMedia updated = postMediaService.update(id, postMedia);
+        if (updated == null) {
+            return org.springframework.http.ResponseEntity.status(HttpStatus.NOT_FOUND).body("PostMedia not found");
+        }
+        return org.springframework.http.ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id) {
+    public org.springframework.http.ResponseEntity<?> delete(@PathVariable UUID id) {
         postMediaService.delete(id);
+        return org.springframework.http.ResponseEntity.noContent().build();
     }
 }

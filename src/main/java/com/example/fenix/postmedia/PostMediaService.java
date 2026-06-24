@@ -33,7 +33,7 @@ public class PostMediaService {
 
     public PostMedia findById(UUID id) {
         return postMediaRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PostMedia not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PostMedia not found"));
     }
 
     public PostMedia upload(UUID postId, MultipartFile file) {
@@ -50,8 +50,8 @@ public class PostMediaService {
 
             // gera um nome único para o arquivo (para o paciente não sobrescrever a foto do outro)
             String originalName = file.getOriginalFilename();
-            String extension = originalName != null ? originalName.substring(originalName.lastIndexOf(".")) : "";
-            String fileName = UUID.randomUUID().toString() + extension;
+            String extension = originalName != null && originalName.contains(".") ? originalName.substring(originalName.lastIndexOf(".")) : "";
+            String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 12) + extension;
 
             // salva o arquivo fisicamente no computador
             Path filePath = uploadPath.resolve(fileName);
@@ -62,8 +62,13 @@ public class PostMediaService {
             media.setPost(post);
             media.setMimeType(file.getContentType());
             
-            // troque o "localhost" pelo seu IP se for testar pelo celular
-            media.setMediaUrl("http://localhost:8080/uploads/" + fileName); 
+            if (file.getContentType() != null && file.getContentType().startsWith("video/")) {
+                media.setMediaType(PostMedia.MediaType.video);
+            } else {
+                media.setMediaType(PostMedia.MediaType.image);
+            }
+            
+            media.setFilename(fileName); 
 
             return postMediaRepository.save(media);
 
@@ -76,7 +81,7 @@ public class PostMediaService {
         PostMedia existingPostMedia = findById(id);
         
         if (postMedia.getMediaType() != null) existingPostMedia.setMediaType(postMedia.getMediaType());
-        if (postMedia.getMediaUrl() != null) existingPostMedia.setMediaUrl(postMedia.getMediaUrl());        
+        if (postMedia.getFilename() != null) existingPostMedia.setFilename(postMedia.getFilename());        
         if (postMedia.getMimeType() != null) existingPostMedia.setMimeType(postMedia.getMimeType());
 
         return postMediaRepository.save(existingPostMedia);
