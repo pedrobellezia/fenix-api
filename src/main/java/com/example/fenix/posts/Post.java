@@ -34,6 +34,9 @@ public class Post {
     @Column(nullable = false)
     private boolean active = true; // Todo post já nasce ativo!
 
+    @Column(nullable = false)
+    private boolean homepage = false;
+
     // A Mágica do Relacionamento: Todo post pertence a 1 usuário
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -72,6 +75,9 @@ public class Post {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public boolean isHomepage() { return homepage; }
+    public void setHomepage(boolean homepage) { this.homepage = homepage; }
 
     public List<PostLike> getLikes() { return likes; }
     public void setLikes(List<PostLike> likes) { this.likes = likes; }

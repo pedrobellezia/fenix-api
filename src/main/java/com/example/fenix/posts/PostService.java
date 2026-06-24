@@ -16,8 +16,8 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public List<Post> listarFeed() {
-        return postRepository.findAll();
+    public List<Post> listarFeed(boolean homepage) {
+        return postRepository.findByHomepage(homepage);
     }
 
     public Post buscarPorId(UUID id) {

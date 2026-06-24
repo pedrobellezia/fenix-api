@@ -41,6 +41,10 @@ public class PostController {
         }
         post.setUser(user);
 
+        if (!"ADMIN".equals(user.getRole())) {
+            post.setHomepage(false);
+        }
+
         Post savedPost = postService.criarPost(post);
 
         if (files != null && !files.isEmpty()) {
@@ -54,8 +58,8 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getFeed() {
-        return postService.listarFeed();
+    public List<Post> getFeed(@RequestParam(defaultValue = "false", required = false) boolean homepage) {
+        return postService.listarFeed(homepage);
     }
 
     @GetMapping("/{id}")
