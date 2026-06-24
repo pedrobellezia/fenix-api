@@ -18,4 +18,11 @@ public class CommentService {
     public List<Comment> listarComentariosPorPost(UUID postId) {
         return commentRepository.findByPostId(postId);
     }
+    public Comment buscarPorId(UUID id) {
+        return commentRepository.findById(id).orElse(null);
+    }
+
+    public void deletarComentario(UUID id) {
+        commentRepository.deleteById(id);
+    }
 }
