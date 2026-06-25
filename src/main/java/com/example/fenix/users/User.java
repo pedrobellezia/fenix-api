@@ -32,8 +32,8 @@ public class User {
     @Column(length = 150, unique = true, nullable = false)
     private String email;
 
-    @Column(name = "pic_url", length = 500)
-    private String picUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+    @Column(name = "pic_url", length = 500, nullable = true)
+    private String picUrl;
 
     @Column(nullable = false)
     private Boolean active = true;

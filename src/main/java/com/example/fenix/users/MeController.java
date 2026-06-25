@@ -16,6 +16,9 @@ public class MeController {
     private UserRepository userRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     // Função interna para descobrir quem é o dono do Token que veio na requisição
@@ -53,6 +56,13 @@ public class MeController {
 
         userRepository.save(user);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/photo", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> uploadProfilePhoto(@RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
+        User user = getUsuarioLogado();
+        User updatedUser = userService.uploadPhoto(user.getId(), file);
+        return ResponseEntity.ok(updatedUser);
     }
 
     // Usar DELETE para inativar a conta

@@ -1,16 +1,22 @@
 package com.example.fenix.users;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final String UPLOAD_DIR = "uploads/";
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -71,5 +77,32 @@ public class UserService {
         }
 
         return userRepository.save(existingUser);
+    }
+
+    public User uploadPhoto(UUID id, MultipartFile file) {
+        try {
+            User user = findById(id);
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
+
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String originalName = file.getOriginalFilename();
+            String extension = originalName != null && originalName.contains(".") ? originalName.substring(originalName.lastIndexOf(".")) : "";
+            String fileName = UUID.randomUUID().toString().replace("-", "").substring(0, 12) + extension;
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath);
+
+            user.setPicUrl(fileName);
+
+            return userRepository.save(user);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao salvar a imagem de perfil", e);
+        }
     }
 }
