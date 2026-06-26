@@ -5,5 +5,5 @@ import java.util.UUID;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, UUID> {
-    List<Post> findByHomepage(boolean homepage);
+    List<Post> findByHomepageOrderByCreatedAtDesc(boolean homepage);
 }

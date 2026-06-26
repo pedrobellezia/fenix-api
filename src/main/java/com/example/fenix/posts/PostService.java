@@ -17,7 +17,7 @@ public class PostService {
     }
 
     public List<Post> listarFeed(boolean homepage) {
-        return postRepository.findByHomepage(homepage);
+        return postRepository.findByHomepageOrderByCreatedAtDesc(homepage);
     }
 
     public Post buscarPorId(UUID id) {
