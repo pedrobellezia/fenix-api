@@ -38,11 +38,14 @@ services:
       JAVA_OPTS: ${JAVA_OPTS}
     ports:
       - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - fenix_uploads:/app/uploads
     networks:
       - fenix-net
 
 volumes:
   postgres_data:
+  fenix_uploads:
 
 networks:
   fenix-net:
